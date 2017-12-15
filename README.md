@@ -1,12 +1,60 @@
 # ember-google-optimize
 
-This README outlines the details of collaborating on this Ember addon.
+A very quick and dirty addon to include Google Optimize into an Ember app.
+
+## Notes
+
+* Expects there to be a global `ga` variable it can use to require the optimize lib
+* Google Optimize doesn't seem to load the previews / redirects on localhost.
+* The activation event name is `optimize.activate`
 
 ## Installation
 
-* `git clone <repository-url>` this repository
-* `cd ember-google-optimize`
-* `npm install`
+* `ember install ember-google-optimize`
+
+## Usage
+
+Use the provided `optimize` service to amend your `app/router.js` file to trigger page load activations. This will use the dataLayer to send the event `optimize.activate`.
+
+```
+...
+const Router = EmberRouter.extend(GooglePageview, RouterScroll, {
+  ...
+  optimize: service(),
+
+  didTransition() {
+    this._super(...arguments);
+    this._activateOptimize();
+  },
+
+  _activateOptimize() {
+    scheduleOnce("afterRender", this, () => {
+      get(this, "optimize").activate();
+    });
+  },
+
+  ...
+});
+```
+
+## Configuration
+
+This plugin uses the Ember CLI project's configuration as defined in `config/environment.js`.
+
+The tracking code will appear only if `ENV.googleOptimize.container` is defined. For instance, to enable the tracking code in only the production environment:
+
+```javascript
+if (environment === "production") {
+  ENV.googleOptimize = {
+    container: "GTM-XXXXXX"
+  };
+}
+```
+
+### Configuration Parameters
+
+* `container` (Default: `null`): the container ID for the Google Optimize container.
+* `injectFlickerSnippet` (Default: `true`): Inject the Google Optimize flicker prevention script into the index.html `<head>`
 
 ## Running
 
