@@ -1,6 +1,5 @@
 /* eslint-env node */
-import { isPresent } from "@ember/utils";
-("use strict");
+"use strict";
 
 var defaultConfig = {
   container: "GTM-XXXXXX",
@@ -18,7 +17,7 @@ module.exports = {
 
     if (
       type === "head" &&
-      isPresent(addonConfig.container) &&
+      addonConfig.container != null &&
       addonConfig.injectFlickerSnippet === true
     ) {
       return [
